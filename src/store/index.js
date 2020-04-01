@@ -17,53 +17,9 @@ export default new Vuex.Store({
       'food',
       'community'
     ],
-    events: [
-      {
-        id: 5928101,
-        user: {
-          id: 'abc123',
-          name: 'Adam'
-        },
-        category: 'animal welfare',
-        organizer: 'Adam',
-        title: 'Cat Cabaret',
-        description: 'Yay felines!',
-        location: 'Meow Town',
-        date: '2019-01-03T21:54:00.000Z',
-        time: '2:00',
-        attendees: []
-      },
-      {
-        id: 8419988,
-        user: {
-          id: 'abc123',
-          name: 'Adam'
-        },
-        category: 'animal welfare',
-        organizer: 'Adam',
-        title: 'Kitty Cluster',
-        description: 'Yay cats!',
-        location: 'Catlandia',
-        date: '2019-01-31T22:09:00.000Z',
-        time: '7:00',
-        attendees: []
-      },
-      {
-        id: 4582797,
-        user: {
-          id: 'abc123',
-          name: 'Adam'
-        },
-        category: 'animal welfare',
-        organizer: 'Adam',
-        title: 'Puppy Parade',
-        description: 'Yay pups!',
-        location: 'Puptown ',
-        date: '2019-02-02T23:27:00.000Z',
-        time: '1:00',
-        attendees: []
-      }
-    ]
+    events: [],
+    eventsTotal: 0,
+    event: {}
   },
   mutations: {
     INCREMENT_COUNT(state, incrementBy) {
@@ -71,6 +27,15 @@ export default new Vuex.Store({
     },
     ADD_EVENT(state, event) {
       state.events.push(event)
+    },
+    SET_EVENTS(state, events) {
+      state.events = events
+    },
+    SET_EVENTS_TOTAL(state, eventsTotal) {
+      state.eventsTotal = eventsTotal
+    },
+    SET_EVENT(state, event) {
+      state.event = event
     }
   },
   actions: {
@@ -83,6 +48,32 @@ export default new Vuex.Store({
       return EventService.postEvent(event).then(() => {
         commit('ADD_EVENT', event.data)
       })
+    },
+    fetchEvents({ commit }, { perPage, page }) {
+      EventService.getEvents(perPage, page)
+        .then(response => {
+          // console.log(response.data)
+          commit('SET_EVENTS', response.data)
+          commit('SET_EVENTS_TOTAL', response.headers['x-total-count'])
+          console.log(response.headers['x-total-count'])
+        })
+        .catch(error => {
+          console.log('There was an error:', error.response)
+        })
+    },
+    fetchEvent({ commit, getters }, id) {
+      let event = getters.getEventById(id)
+      if (event) {
+        commit('SET_EVENT', event)
+      } else {
+        EventService.getEvent(id)
+          .then(response => {
+            commit('SET_EVENT', response.data)
+          })
+          .catch(error => {
+            console.log('There was an error:', error.response)
+          })
+      }
     }
   },
   getters: {

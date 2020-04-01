@@ -72,6 +72,34 @@
       "date": "2020-03-03T09:05:00.000Z",
       "time": "19:00",
       "attendees": []
+    },
+    {
+      "id": 284551,
+      "category": "animal welfare",
+      "organizer": {
+        "id": "abc123",
+        "name": "Adam Jahr"
+      },
+      "title": "dsd",
+      "description": "ds",
+      "location": "dsd",
+      "date": "2020-03-02T15:38:00.000Z",
+      "time": "19:00",
+      "attendees": []
+    },
+    {
+      "id": 216678,
+      "category": "animal welfare",
+      "organizer": {
+        "id": "abc123",
+        "name": "Adam Jahr"
+      },
+      "title": "dsd",
+      "description": "dsdv",
+      "location": "USA",
+      "date": "2020-03-12T15:38:00.000Z",
+      "time": "19:00",
+      "attendees": []
     }
   ]
 }

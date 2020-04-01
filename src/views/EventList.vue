@@ -4,12 +4,19 @@
     <!-- <div>user : {{ user }}</div>
     <div>categories: {{ categories }}</div>
     <div>categories length: {{ catCount }}</div>
-    <div>{{ getEvent(8419988) }}</div> -->
-    <EventCard
-      v-for="event in events"
-      :key="event.id"
-      :event="event"
-    ></EventCard>
+    <div>{{ getEvent(8419988) }}</div>-->
+    <EventCard v-for="event in events" :key="event.id" :event="event" />
+    <template v-if="page != 1">
+      <router-link :to="{ name: 'event-list', query: { page: page - 1 } }"
+        >Prev Page</router-link
+      >
+      |
+    </template>
+    <template v-if="eventsTotal > page * 3">
+      <router-link :to="{ name: 'event-list', query: { page: page + 1 } }"
+        >Next Page</router-link
+      >
+    </template>
   </div>
 </template>
 
@@ -24,9 +31,7 @@ export default {
     // Counter
   },
   data() {
-    return {
-      events: null
-    }
+    return {}
   },
   computed: {
     // catLength() {
@@ -36,8 +41,12 @@ export default {
     //   return this.$store.getters.getEventById
     // },
     // ...mapGetters(['catLength', 'getEventById']),
+    page() {
+      return parseInt(this.$route.query.page) || 1
+    },
+
     ...mapGetters({ catCount: 'catLength', getEvent: 'getEventById' }),
-    ...mapState(['user', 'categories'])
+    ...mapState(['user', 'categories', 'events', 'eventsTotal'])
   },
 
   // mapState({
@@ -46,14 +55,10 @@ export default {
   // })
 
   created() {
-    EventService.getEvents()
-      .then(response => {
-        // console.log(response.data)
-        this.events = response.data
-      })
-      .catch(error => {
-        console.log('There was an error:', error.response)
-      })
+    this.$store.dispatch('fetchEvents', {
+      perPage: 3,
+      page: this.page
+    })
   }
 }
 </script>
